@@ -1,4 +1,4 @@
-package modele;
+package app.cabinet.modele;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package modele;
+package app.cabinet.modele;
 
 public class Acte {
     private int idActe;
