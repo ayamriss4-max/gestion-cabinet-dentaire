@@ -3,8 +3,12 @@ package util;
 import modele.Acte;
 import modele.Creneau;
 import modele.Dentiste;
+import persistance.CabinetDao;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestPlanning {
     public static void main(String[] args) {
@@ -24,5 +28,9 @@ public class TestPlanning {
 
         Acte acteLong = new Acte(11, "Opération lourde", 90, 1500.0);
         System.out.println("L'acte long (90 min) tient-il dans le créneau de 60 min ? " + c1.contient(acteLong));
+
+        List<Dentiste> listeDentistes = new ArrayList<>();
+        listeDentistes.add(d1);
+        CabinetDao.sauvegarderDentistes(listeDentistes, "dentistes.txt");
     }
 }
