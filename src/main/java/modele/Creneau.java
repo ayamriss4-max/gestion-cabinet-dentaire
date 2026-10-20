@@ -9,7 +9,7 @@ public class Creneau {
     private LocalDate date;
     private LocalTime heureDebut;
     private LocalTime heureFin;
-    private String type; // "normal" ou "urgence"[cite: 154]
+    private String type; 
     private Dentiste dentiste;
     private boolean libre;
 
@@ -18,7 +18,6 @@ public class Creneau {
     }
 
     public Creneau(int idCreneau, LocalDate date, LocalTime heureDebut, LocalTime heureFin, String type, Dentiste dentiste) {
-        // Contrôle des horaires : début < fin
         if (heureDebut != null && heureFin != null && !heureDebut.isBefore(heureFin)) {
             throw new IllegalArgumentException("L'heure de début doit être strictement antérieure à l'heure de fin.");
         }
@@ -38,8 +37,6 @@ public class Creneau {
     public void setLibre(boolean libre) {
         this.libre = libre;
     }
-
-    // Vérifie si la durée de l'acte tient dans le créneau[cite: 156]
     public boolean contient(Acte acte) {
         if (acte == null) {
             return false;
