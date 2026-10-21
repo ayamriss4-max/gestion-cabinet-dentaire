@@ -29,6 +29,11 @@ public class MainController {
     @FXML private TextField tarifField;
     private List<Acte> listeActes;
 
+    @FXML private TextField patientIdResaField;
+    @FXML private TextField dentisteIdResaField;
+    @FXML private TextField acteIdResaField;
+    @FXML private TextField creneauIdResaField;
+
     @FXML
     private void handleChargerDentistes() {
         listeDentistes = CabinetDao.lireDentistes();
@@ -57,7 +62,6 @@ public class MainController {
         }
     }
 
-    // --- CRENEAUX ---
     @FXML
     private void handleChargerCreneaux() {
         listeCreneaux = CabinetDao.lireCreneaux();
@@ -93,7 +97,6 @@ public class MainController {
         }
     }
 
-    // --- ACTES ---
     @FXML
     private void handleChargerActes() {
         listeActes = CabinetDao.lireActes();
@@ -125,4 +128,70 @@ public class MainController {
             }
         }
     }
+
+    @FXML
+    private void handleReserverAdmin() {
+        String patientIdStr = patientIdResaField.getText().trim();
+        String dentisteIdStr = dentisteIdResaField.getText().trim();
+        String acteIdStr = acteIdResaField.getText().trim();
+        String creneauIdStr = creneauIdResaField.getText().trim();
+
+        if (!patientIdStr.isEmpty() && !dentisteIdStr.isEmpty() && !acteIdStr.isEmpty() && !creneauIdStr.isEmpty()) {
+            try {
+                int patientId = Integer.parseInt(patientIdStr);
+                int dentisteId = Integer.parseInt(dentisteIdStr);
+                int acteId = Integer.parseInt(acteIdStr);
+                int creneauId = Integer.parseInt(creneauIdStr);
+
+                if (listeCreneaux == null) listeCreneaux = CabinetDao.lireCreneaux();
+                if (listeActes == null) listeActes = CabinetDao.lireActes();
+
+                Creneau creneauSelectionne = null;
+                for (Creneau c : listeCreneaux) {
+                    if (c.getId() == creneauId) {
+                        creneauSelectionne = c;
+                        break;
+                    }
+                }
+
+                if (creneauSelectionne == null) {
+                    System.out.println("❌ Erreur : Créneau introuvable (ID: " + creneauId + ").");
+                    return;
+                }
+
+                if (creneauSelectionne.getDentisteId() != dentisteId) {
+                    System.out.println("❌ Erreur : Ce créneau n'appartient pas au Dentiste ID #" + dentisteId);
+                    return;
+                }
+
+                Acte acteSelectionne = null;
+                for (Acte a : listeActes) {
+                    if (a.getId() == acteId) {
+                        acteSelectionne = a;
+                        break;
+                    }
+                }
+
+                if (creneauSelectionne.getDureeMinutes() < 15) { // Exemple de règle de durée minimale
+                    System.out.println("❌ Erreur : Durée du créneau insuffisante pour effectuer cet acte.");
+                    return;
+                }
+
+                System.out.println("✅ Réservation validée avec succès pour le patient #" + patientId 
+                        + " avec le dentiste #" + dentisteId 
+                        + " pour l'acte #" + acteId 
+                        + " sur le créneau #" + creneauId);
+
+                patientIdResaField.clear();
+                dentisteIdResaField.clear();
+                acteIdResaField.clear();
+                creneauIdResaField.clear();
+
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Erreur : Les ID doivent être des nombres entiers valides.");
+            }
+        } else {
+            System.out.println("⚠️ Veuillez remplir tous les champs de réservation.");
+        }
+}
 }

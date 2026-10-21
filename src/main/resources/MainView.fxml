@@ -54,4 +54,17 @@
         <TextField fx:id="tarifField" promptText="Tarif (DH)" prefWidth="100.0" />
         <Button onAction="#handleAjouterActe" style="-fx-background-color: #e65100; -fx-text-fill: white;" text="Ajouter" />
     </HBox>
+
+    <Label text="Administration des Réservations">
+        <font>
+            <Font name="System Bold" size="14.0" />
+        </font>
+    </Label>
+    <HBox spacing="5.0">
+        <TextField fx:id="patientIdResaField" promptText="ID Patient" prefWidth="90.0" />
+        <TextField fx:id="dentisteIdResaField" promptText="ID Dentiste" prefWidth="90.0" />
+        <TextField fx:id="acteIdResaField" promptText="ID Acte" prefWidth="90.0" />
+        <TextField fx:id="creneauIdResaField" promptText="ID Créneau" prefWidth="90.0" />
+        <Button onAction="#handleReserverAdmin" style="-fx-background-color: #6a1b9a; -fx-text-fill: white;" text="Réserver" />
+    </HBox>
 </VBox>
