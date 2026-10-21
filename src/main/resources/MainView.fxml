@@ -9,29 +9,38 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.cabinet.vue.MainController">
+<VBox alignment="CENTER" spacing="12.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.cabinet.vue.MainController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
     </padding>
 
     <Label text="Gestion du Cabinet Dentaire">
         <font>
-            <Font name="System Bold" size="20.0" />
+            <Font name="System Bold" size="18.0" />
         </font>
     </Label>
 
-    <Button onAction="#handleChargerDentistes" text="Charger la liste des Dentistes" />
+    <HBox spacing="10.0" alignment="CENTER">
+        <Button onAction="#handleChargerDentistes" text="Charger Dentistes" />
+    </HBox>
+    <ListView fx:id="dentisteListView" prefHeight="120.0" prefWidth="450.0" />
+    
+    <HBox spacing="5.0">
+        <TextField fx:id="nomField" promptText="Nom" HBox.hgrow="ALWAYS" />
+        <TextField fx:id="prenomField" promptText="Prénom" HBox.hgrow="ALWAYS" />
+        <TextField fx:id="specialiteField" promptText="Spécialité" HBox.hgrow="ALWAYS" />
+        <Button onAction="#handleAjouterDentiste" style="-fx-background-color: #2e7d32; -fx-text-fill: white;" text="Ajouter" />
+    </HBox>
 
-    <ListView fx:id="dentisteListView" prefHeight="180.0" prefWidth="400.0" />
+    <HBox spacing="10.0" alignment="CENTER">
+        <Button onAction="#handleChargerCreneaux" text="Charger Créneaux" />
+    </HBox>
+    <ListView fx:id="creneauListView" prefHeight="120.0" prefWidth="450.0" />
 
-    <VBox spacing="8.0">
-        <HBox spacing="10.0">
-            <TextField fx:id="nomField" promptText="Nom" HBox.hgrow="ALWAYS" />
-            <TextField fx:id="prenomField" promptText="Prénom" HBox.hgrow="ALWAYS" />
-        </HBox>
-        <HBox spacing="10.0">
-            <TextField fx:id="specialiteField" promptText="Spécialité" HBox.hgrow="ALWAYS" />
-            <Button onAction="#handleAjouterDentiste" style="-fx-background-color: #2e7d32; -fx-text-fill: white;" text="Ajouter Dentiste" />
-        </HBox>
-    </VBox>
+    <HBox spacing="5.0">
+        <TextField fx:id="dateHeureField" promptText="Date/Heure (ex: 2026-10-21 14:00)" HBox.hgrow="ALWAYS" />
+        <TextField fx:id="dureeField" promptText="Durée (min)" prefWidth="90.0" />
+        <TextField fx:id="dentisteIdField" promptText="ID Dentiste" prefWidth="90.0" />
+        <Button onAction="#handleAjouterCreneau" style="-fx-background-color: #1976d2; -fx-text-fill: white;" text="Ajouter" />
+    </HBox>
 </VBox>

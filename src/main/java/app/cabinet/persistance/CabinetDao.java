@@ -1,56 +1,95 @@
 package app.cabinet.persistance;
 
+import app.cabinet.modele.Creneau;
 import app.cabinet.modele.Dentiste;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CabinetDao {
 
-    public static void sauvegarderDentistes(List<Dentiste> dentistes, String nomFichier) {
-        Path chemin = Paths.get(nomFichier);
-        try (BufferedWriter writer = Files.newBufferedWriter(chemin, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-            for (Dentiste d : dentistes) {
-                String ligne = d.getIdDentiste() + ";" + d.getNom() + ";" + d.getPrenom() + ";" + d.getSpecialite();
-                writer.write(ligne);
-                writer.newLine();
+    // --- GESTION DES DENTISTES ---
+    
+    public static List<Dentiste> lireDentistes() {
+        List<Dentiste> liste = new ArrayList<>();
+        File file = new File("dentistes.txt");
+        if (!file.exists()) return liste;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] p = line.split(";");
+                if (p.length == 4) {
+                    int id = Integer.parseInt(p[0].trim());
+                    String nom = p[1].trim();
+                    String prenom = p[2].trim();
+                    String specialite = p[3].trim();
+                    liste.add(new Dentiste(id, nom, prenom, specialite));
+                }
             }
-            writer.flush();
-            System.out.println("Sauvegarde des dentistes réussie dans : " + chemin.toAbsolutePath());
         } catch (IOException e) {
-            System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
+            e.printStackTrace();
+        }
+        return liste;
+    }
+
+    public static void sauvegarderDentistes(List<Dentiste> liste, String filename) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
+            for (Dentiste d : liste) {
+                bw.write(d.getId() + ";" + d.getNom() + ";" + d.getPrenom() + ";" + d.getSpecialite());
+                bw.newLine();
+            }
+            System.out.println("Sauvegarde des dentistes réussie dans : " + new File(filename).getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public static List<Dentiste> lireDentistes() {
-        List<Dentiste> dentistes = new ArrayList<>();
-        Path chemin = Paths.get("dentistes.txt");
+    // --- GESTION DES CRENEAUX ---
+
+    public static List<Creneau> lireCreneaux() {
+        List<Creneau> liste = new ArrayList<>();
+        File file = new File("creneaux.txt");
         
-        if (Files.exists(chemin)) {
-            try (BufferedReader reader = Files.newBufferedReader(chemin)) {
-                String ligne;
-                while ((ligne = reader.readLine()) != null) {
-                    String[] parts = ligne.split(";");
-                    if (parts.length >= 4) {
-                        int id = Integer.parseInt(parts[0]);
-                        String nom = parts[1];
-                        String prenom = parts[2];
-                        String specialite = parts[3];
-                        
-                        Dentiste d = new Dentiste(id, nom, prenom, specialite);
-                        dentistes.add(d);
-                    }
-                }
-            } catch (IOException e) {
-                System.err.println("Erreur lors de la lecture : " + e.getMessage());
-            }
+        if (!file.exists()) {
+            System.out.println("⚠️ Fichier creneaux.txt introuvable à l'emplacement : " + file.getAbsolutePath());
+            return liste;
         }
-        return dentistes;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                String[] p = line.split(";");
+                if (p.length == 4) {
+                    int id = Integer.parseInt(p[0].trim());
+                    String dateHeure = p[1].trim();
+                    int duree = Integer.parseInt(p[2].trim());
+                    int dentisteId = Integer.parseInt(p[3].trim());
+                    liste.add(new Creneau(id, dateHeure, duree, dentisteId));
+                }
+            }
+            System.out.println("✅ Nombre de créneaux chargés : " + liste.size());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return liste;
+    }
+
+    public static void sauvegarderCreneaux(List<Creneau> liste, String filename) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
+            for (Creneau c : liste) {
+                bw.write(c.getId() + ";" + c.getDateHeure() + ";" + c.getDureeMinutes() + ";" + c.getDentisteId());
+                bw.newLine();
+            }
+            System.out.println("Sauvegarde des créneaux réussie dans : " + new File(filename).getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
