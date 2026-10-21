@@ -1,5 +1,6 @@
 package app.cabinet.vue;
 
+import app.cabinet.modele.Acte;
 import app.cabinet.modele.Creneau;
 import app.cabinet.modele.Dentiste;
 import app.cabinet.persistance.CabinetDao;
@@ -22,6 +23,11 @@ public class MainController {
     @FXML private TextField dureeField;
     @FXML private TextField dentisteIdField;
     private List<Creneau> listeCreneaux;
+
+    @FXML private ListView<String> acteListView;
+    @FXML private TextField libelleField;
+    @FXML private TextField tarifField;
+    private List<Acte> listeActes;
 
     @FXML
     private void handleChargerDentistes() {
@@ -51,6 +57,7 @@ public class MainController {
         }
     }
 
+    // --- CRENEAUX ---
     @FXML
     private void handleChargerCreneaux() {
         listeCreneaux = CabinetDao.lireCreneaux();
@@ -81,7 +88,40 @@ public class MainController {
                 dentisteIdField.clear();
                 handleChargerCreneaux();
             } catch (NumberFormatException e) {
-                e.printStackTrace(); // Gérer les erreurs de saisie numérique si besoin
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // --- ACTES ---
+    @FXML
+    private void handleChargerActes() {
+        listeActes = CabinetDao.lireActes();
+        acteListView.getItems().clear();
+        for (Acte a : listeActes) {
+            acteListView.getItems().add("Acte #" + a.getId() + " | " + a.getLibelle() + " - " + a.getTarif() + " DH");
+        }
+    }
+
+    @FXML
+    private void handleAjouterActe() {
+        String libelle = libelleField.getText().trim();
+        String tarifStr = tarifField.getText().trim();
+
+        if (!libelle.isEmpty() && !tarifStr.isEmpty()) {
+            try {
+                if (listeActes == null) listeActes = CabinetDao.lireActes();
+                int nouveauId = listeActes.size() + 1;
+                double tarif = Double.parseDouble(tarifStr);
+
+                listeActes.add(new Acte(nouveauId, libelle, tarif));
+                CabinetDao.sauvegarderActes(listeActes, "actes.txt");
+
+                libelleField.clear();
+                tarifField.clear();
+                handleChargerActes();
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
         }
     }

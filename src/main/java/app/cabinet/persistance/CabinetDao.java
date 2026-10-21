@@ -1,5 +1,6 @@
 package app.cabinet.persistance;
 
+import app.cabinet.modele.Acte;
 import app.cabinet.modele.Creneau;
 import app.cabinet.modele.Dentiste;
 import java.io.BufferedReader;
@@ -13,7 +14,6 @@ import java.util.List;
 
 public class CabinetDao {
 
-    // --- GESTION DES DENTISTES ---
     
     public static List<Dentiste> lireDentistes() {
         List<Dentiste> liste = new ArrayList<>();
@@ -50,7 +50,6 @@ public class CabinetDao {
         }
     }
 
-    // --- GESTION DES CRENEAUX ---
 
     public static List<Creneau> lireCreneaux() {
         List<Creneau> liste = new ArrayList<>();
@@ -88,6 +87,47 @@ public class CabinetDao {
                 bw.newLine();
             }
             System.out.println("Sauvegarde des créneaux réussie dans : " + new File(filename).getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static List<Acte> lireActes() {
+        List<Acte> liste = new ArrayList<>();
+        File file = new File("actes.txt");
+        
+        if (!file.exists()) {
+            System.out.println("⚠️ Fichier actes.txt introuvable à l'emplacement : " + file.getAbsolutePath());
+            return liste;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                String[] p = line.split(";");
+                if (p.length == 3) {
+                    int id = Integer.parseInt(p[0].trim());
+                    String libelle = p[1].trim();
+                    double tarif = Double.parseDouble(p[2].trim());
+                    liste.add(new Acte(id, libelle, tarif));
+                }
+            }
+            System.out.println("✅ Nombre d'actes chargés : " + liste.size());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return liste;
+    }
+
+    public static void sauvegarderActes(List<Acte> liste, String filename) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
+            for (Acte a : liste) {
+                bw.write(a.getId() + ";" + a.getLibelle() + ";" + a.getTarif());
+                bw.newLine();
+            }
+            System.out.println("Sauvegarde des actes réussie dans : " + new File(filename).getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }

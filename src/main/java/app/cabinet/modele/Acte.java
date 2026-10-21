@@ -1,55 +1,22 @@
 package app.cabinet.modele;
 
 public class Acte {
-    private int idActe;
+    private int id;
     private String libelle;
-    private int duree; 
     private double tarif;
 
-    public Acte() {
-    }
-
-    public Acte(int idActe, String libelle, int duree, double tarif) {
-        this.idActe = idActe;
+    public Acte(int id, String libelle, double tarif) {
+        this.id = id;
         this.libelle = libelle;
-        this.duree = duree;
         this.tarif = tarif;
     }
 
-    public int getIdActe() {
-        return idActe;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setIdActe(int idActe) {
-        this.idActe = idActe;
-    }
+    public String getLibelle() { return libelle; }
+    public void setLibelle(String libelle) { this.libelle = libelle; }
 
-    public String getLibelle() {
-        return libelle;
-    }
-
-    public void setLibelle(String libelle) {
-        this.libelle = libelle;
-    }
-
-    public int getDuree() {
-        return duree;
-    }
-
-    public void setDuree(int duree) {
-        this.duree = duree;
-    }
-
-    public double getTarif() {
-        return tarif;
-    }
-
-    public void setTarif(double tarif) {
-        this.tarif = tarif;
-    }
-
-    @Override
-    public String toString() {
-        return "Acte [id=" + idActe + ", libelle=" + libelle + ", durée=" + duree + " min, tarif=" + tarif + " DH]";
-    }
+    public double getTarif() { return tarif; }
+    public void setTarif(double tarif) { this.tarif = tarif; }
 }

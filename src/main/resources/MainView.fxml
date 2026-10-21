@@ -23,7 +23,7 @@
     <HBox spacing="10.0" alignment="CENTER">
         <Button onAction="#handleChargerDentistes" text="Charger Dentistes" />
     </HBox>
-    <ListView fx:id="dentisteListView" prefHeight="120.0" prefWidth="450.0" />
+    <ListView fx:id="dentisteListView" prefHeight="100.0" prefWidth="450.0" />
     
     <HBox spacing="5.0">
         <TextField fx:id="nomField" promptText="Nom" HBox.hgrow="ALWAYS" />
@@ -35,12 +35,23 @@
     <HBox spacing="10.0" alignment="CENTER">
         <Button onAction="#handleChargerCreneaux" text="Charger Créneaux" />
     </HBox>
-    <ListView fx:id="creneauListView" prefHeight="120.0" prefWidth="450.0" />
+    <ListView fx:id="creneauListView" prefHeight="100.0" prefWidth="450.0" />
 
     <HBox spacing="5.0">
         <TextField fx:id="dateHeureField" promptText="Date/Heure (ex: 2026-10-21 14:00)" HBox.hgrow="ALWAYS" />
         <TextField fx:id="dureeField" promptText="Durée (min)" prefWidth="90.0" />
         <TextField fx:id="dentisteIdField" promptText="ID Dentiste" prefWidth="90.0" />
         <Button onAction="#handleAjouterCreneau" style="-fx-background-color: #1976d2; -fx-text-fill: white;" text="Ajouter" />
+    </HBox>
+
+    <HBox spacing="10.0" alignment="CENTER">
+        <Button onAction="#handleChargerActes" text="Charger Actes" />
+    </HBox>
+    <ListView fx:id="acteListView" prefHeight="100.0" prefWidth="450.0" />
+
+    <HBox spacing="5.0">
+        <TextField fx:id="libelleField" promptText="Libellé de l'acte" HBox.hgrow="ALWAYS" />
+        <TextField fx:id="tarifField" promptText="Tarif (DH)" prefWidth="100.0" />
+        <Button onAction="#handleAjouterActe" style="-fx-background-color: #e65100; -fx-text-fill: white;" text="Ajouter" />
     </HBox>
 </VBox>
