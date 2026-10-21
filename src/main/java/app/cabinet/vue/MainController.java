@@ -12,6 +12,7 @@ import java.util.List;
 
 public class MainController {
 
+	@FXML private TextField rdvIdField;
     @FXML private ListView<String> dentisteListView;
     @FXML private TextField nomField;
     @FXML private TextField prenomField;
@@ -172,7 +173,7 @@ public class MainController {
                     }
                 }
 
-                if (creneauSelectionne.getDureeMinutes() < 15) { // Exemple de règle de durée minimale
+                if (creneauSelectionne.getDureeMinutes() < 15) { 
                     System.out.println("❌ Erreur : Durée du créneau insuffisante pour effectuer cet acte.");
                     return;
                 }
@@ -193,5 +194,38 @@ public class MainController {
         } else {
             System.out.println("⚠️ Veuillez remplir tous les champs de réservation.");
         }
-}
+    }
+
+    // --- VALIDATION / ANNULATION (Semaine 3 - Tâche 3.10) ---
+    @FXML
+    private void handleValiderRdv() {
+        String rdvIdStr = rdvIdField.getText().trim();
+        if (!rdvIdStr.isEmpty()) {
+            try {
+                int rdvId = Integer.parseInt(rdvIdStr);
+                System.out.println("✅ Rendez-vous #" + rdvId + " validé avec succès.");
+                rdvIdField.clear();
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Erreur : L'ID du rendez-vous doit être un nombre entier.");
+            }
+        } else {
+            System.out.println("⚠️ Veuillez saisir l'ID du rendez-vous à valider.");
+        }
+    }
+
+    @FXML
+    private void handleAnnulerRdv() {
+        String rdvIdStr = rdvIdField.getText().trim();
+        if (!rdvIdStr.isEmpty()) {
+            try {
+                int rdvId = Integer.parseInt(rdvIdStr);
+                System.out.println("🚫 Rendez-vous #" + rdvId + " annulé. Le créneau est libéré.");
+                rdvIdField.clear();
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Erreur : L'ID du rendez-vous doit être un nombre entier.");
+            }
+        } else {
+            System.out.println("⚠️ Veuillez saisir l'ID du rendez-vous à annuler.");
+        }
+    }
 }

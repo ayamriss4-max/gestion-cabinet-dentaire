@@ -34,6 +34,10 @@ public class Dentiste {
         this.planning.add(c);
     }
 
+    public int getId() {
+        return idDentiste;
+    }
+
     public int getIdDentiste() {
         return idDentiste;
     }
