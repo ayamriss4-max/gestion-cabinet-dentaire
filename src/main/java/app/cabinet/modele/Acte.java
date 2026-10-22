@@ -1,14 +1,22 @@
 package app.cabinet.modele;
 
-public class Acte {
+import java.io.Serializable;
+import java.time.Duration;
+
+public class Acte implements Serializable{
+	
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private String libelle;
     private double tarif;
-
-    public Acte(int id, String libelle, double tarif) {
+    private Duration duree ;
+   
+    public Acte(int id, String libelle, double tarif,Duration duree ) {
         this.id = id;
         this.libelle = libelle;
         this.tarif = tarif;
+        this.duree= duree ;
     }
 
     public int getId() { return id; }
@@ -19,4 +27,12 @@ public class Acte {
 
     public double getTarif() { return tarif; }
     public void setTarif(double tarif) { this.tarif = tarif; }
+
+    public void setDuree(Duration duree) {
+        this.duree = duree;
+    }
+
+    public Duration getDuree() {
+        return duree ;
+    }
 }

@@ -1,27 +1,72 @@
 package app.cabinet.modele;
 
-public class Creneau {
-    private int id;
-    private String dateHeure; 
-    private int dureeMinutes; 
-    private int dentisteId;   
+import java.io.Serializable;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
-    public Creneau(int id, String dateHeure, int dureeMinutes, int dentisteId) {
-        this.id = id;
-        this.dateHeure = dateHeure;
-        this.dureeMinutes = dureeMinutes;
-        this.dentisteId = dentisteId;
+public class Creneau implements Serializable {
+
+    private int idCreneau;
+    private LocalDate date;
+    private LocalTime heureDebut;
+    private LocalTime heureFin;
+    private String type;
+    private Dentiste dentiste;
+    
+    public static String NORMAL= "normal" ;
+    public static String URGENCE= "urgence" ;
+    
+    public Creneau(int idCreneau, LocalDate date, LocalTime heureDebut,
+                   LocalTime heureFin, String type, Dentiste dentiste) {
+        if (!heureDebut.isBefore(heureFin)) {
+            throw new IllegalArgumentException("L'heure de début doit précéder l'heure de fin");
+        }
+        this.idCreneau = idCreneau;
+        this.date = date;
+        this.heureDebut = heureDebut;
+        this.heureFin = heureFin;
+        this.type = type;
+        this.dentiste = dentiste;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getIdCreneau() { return idCreneau; }
+    public void setIdCreneau(int idCreneau) { this.idCreneau = idCreneau; }
 
-    public String getDateHeure() { return dateHeure; }
-    public void setDateHeure(String dateHeure) { this.dateHeure = dateHeure; }
+    public LocalDate getDate() { return date; }
+    public void setDate(LocalDate date) { this.date = date; }
 
-    public int getDureeMinutes() { return dureeMinutes; }
-    public void setDureeMinutes(int dureeMinutes) { this.dureeMinutes = dureeMinutes; }
+    public LocalTime getHeureDebut() { return heureDebut; }
+    public void setHeureDebut(LocalTime heureDebut) { this.heureDebut = heureDebut; }
 
-    public int getDentisteId() { return dentisteId; }
-    public void setDentisteId(int dentisteId) { this.dentisteId = dentisteId; }
+    public LocalTime getHeureFin() { return heureFin; }
+    public void setHeureFin(LocalTime heureFin) { this.heureFin = heureFin; }
+
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+
+    public Dentiste getDentiste() { return dentiste; }
+    public void setDentiste(Dentiste dentiste) { this.dentiste = dentiste; }
+    public boolean estLibre() {
+        return true;
+    }
+
+    public boolean contient(Acte acte) {
+        long minutesCreneau = Duration.between(heureDebut, heureFin).toMinutes();
+        long minutesActe = acte.getDuree().toMinutes();
+        return minutesCreneau <= minutesActe;
+    }
+    
+    
+
+    public boolean estPasse() {
+        return LocalDateTime.of(date, heureDebut).isBefore(LocalDateTime.now());
+    }
+
+
+    @Override
+    public String toString() {
+        return date + " " + heureDebut + "-" + heureFin +  type ;
+    }
 }
