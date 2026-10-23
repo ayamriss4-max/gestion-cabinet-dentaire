@@ -13,6 +13,9 @@ public class Dentiste {
     public Dentiste() {
         this.planning = new ArrayList<>();
     }
+    public Dentiste(String nom, String prenom) {
+        this(0, nom, prenom, "");
+    }
 
     public Dentiste(int idDentiste, String nom, String prenom, String specialite) {
         this.idDentiste = idDentiste;

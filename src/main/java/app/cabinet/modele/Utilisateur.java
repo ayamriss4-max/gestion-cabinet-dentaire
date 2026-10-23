@@ -1,6 +1,6 @@
-package modele;
+package app.cabinet.modele;
 
-import util.MotDePasse;
+import app.cabinet.util.MotDePasse;
 
 public abstract class Utilisateur {
 

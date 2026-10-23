@@ -1,14 +1,15 @@
-package service;
+package app.cabinet.service;
 
-import modele.Acte;
-import modele.Administrateur;
-import modele.Creneau;
-import modele.Dentiste;
-import modele.Patient;
-import modele.RendezVous;
-import modele.Utilisateur;
-import persistance.UtilisateurPersistance;
-import util.MotDePasse;
+import app.cabinet.modele.Acte;
+import app.cabinet.modele.Administrateur;
+import app.cabinet.modele.Creneau;
+import app.cabinet.modele.CreneauReserve;
+import app.cabinet.modele.Dentiste;
+import app.cabinet.modele.Patient;
+import app.cabinet.modele.RendezVous;
+import app.cabinet.modele.Utilisateur;
+import app.cabinet.persistance.UtilisateurPersistance;
+import app.cabinet.util.MotDePasse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -31,11 +32,9 @@ public class Donnee {
 
     // ---------- Utilisateurs ----------
 
-    // Lit les comptes dans donnees/utilisateurs.csv
     public static void chargerTout() {
         utilisateurs.clear();
         utilisateurs.addAll(UtilisateurPersistance.charger(dossier));
-        // Premier lancement : on crée le compte administrateur par défaut
         if (utilisateurs.isEmpty()) {
             utilisateurs.add(new Administrateur("admin", MotDePasse.hacher("admin123")));
             sauvegarderUtilisateurs();
@@ -46,7 +45,6 @@ public class Donnee {
         UtilisateurPersistance.sauvegarder(utilisateurs, dossier);
     }
 
-    // Renvoie l'utilisateur connecté, ou null si login ou mot de passe incorrect
     public static Utilisateur connecter(String login, String pwd) {
         for (Utilisateur u : utilisateurs) {
             if (u.authentifier(login, pwd)) {
@@ -75,7 +73,6 @@ public class Donnee {
         return null;
     }
 
-    // Renvoie le patient qui a ce CIN, ou null s'il n'existe pas
     public static Patient chercherPatientParCin(String cin) {
         for (Patient p : getPatients()) {
             if (p.getCin().equalsIgnoreCase(cin)) {
@@ -85,14 +82,12 @@ public class Donnee {
         return null;
     }
 
-    // Vrai si le patient a au moins un rendez-vous
     public static boolean patientADesRdv(Patient p) {
         return !rdvsDuPatient(p).isEmpty();
     }
 
     // ---------- Rendez-vous ----------
 
-    // Le rendez-vous (non annulé) qui occupe ce créneau, ou null si le créneau est libre
     public static RendezVous rdvDuCreneau(Creneau c) {
         for (RendezVous r : rdvs) {
             if (r.getCreneau().getIdCreneau() == c.getIdCreneau()
@@ -103,7 +98,6 @@ public class Donnee {
         return null;
     }
 
-    // Les rendez-vous d'un patient
     public static List<RendezVous> rdvsDuPatient(Patient p) {
         List<RendezVous> liste = new ArrayList<>();
         for (RendezVous r : rdvs) {
@@ -142,7 +136,6 @@ public class Donnee {
         return null;
     }
 
-    // Écrit tous les rendez-vous dans donnees/rdv.csv
     public static void sauvegarderRdvs() {
         List<String> lignes = new ArrayList<>();
         for (RendezVous r : rdvs) {
@@ -158,7 +151,6 @@ public class Donnee {
         }
     }
 
-    // Lit donnees/rdv.csv (à appeler après la création des actes et des créneaux)
     public static void chargerRdvs() {
         rdvs.clear();
         Path chemin = Paths.get(dossier, "rdv.csv");
@@ -178,8 +170,10 @@ public class Donnee {
                 Acte a = trouverActe(Integer.parseInt(t[5]));
                 Creneau c = trouverCreneau(Integer.parseInt(t[6]));
                 if (u instanceof Patient && a != null && c != null) {
+                    // CORRECTION ICI : On enveloppe le créneau dans un CreneauReserve
+                    CreneauReserve cr = new CreneauReserve(c);
                     rdvs.add(new RendezVous(Integer.parseInt(t[0]), LocalDate.parse(t[1]),
-                            LocalDate.parse(t[2]), t[3], (Patient) u, a, c));
+                            LocalDate.parse(t[2]), t[3], (Patient) u, a, cr));
                 }
             }
         } catch (IOException e) {

@@ -1,10 +1,10 @@
-package service;
+package app.cabinet.service;
 
-import modele.Acte;
-import modele.Creneau;
-import modele.Dentiste;
-import modele.Patient;
-import util.MotDePasse;
+import app.cabinet.modele.Acte;
+import app.cabinet.modele.Creneau;
+import app.cabinet.modele.Dentiste;
+import app.cabinet.modele.Patient;
+import app.cabinet.util.MotDePasse;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;

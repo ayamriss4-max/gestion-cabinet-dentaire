@@ -1,4 +1,4 @@
-package modele;
+package app.cabinet.modele;
 
 import java.time.LocalDate;
 
@@ -20,7 +20,17 @@ public class Patient extends Utilisateur {
         this.telephone = telephone;
         this.dateNaissance = dateNaissance;
     }
-
+    public Patient(String nom, String prenom) {
+      
+        super(nom.toLowerCase() + "." + prenom.toLowerCase(), ""); 
+        
+        this.cin = "00000000"; 
+        this.nom = nom;
+        this.prenom = prenom;
+        this.adresse = "";
+        this.telephone = "";
+        this.dateNaissance = LocalDate.now(); 
+    }
     public String getCin() { return cin; }
     public void setCin(String cin) { this.cin = cin; }
     

@@ -1,4 +1,4 @@
-package util;
+package app.cabinet.util;
 
 import java.time.LocalDate;
 

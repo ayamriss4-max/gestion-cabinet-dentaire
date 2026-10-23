@@ -1,4 +1,4 @@
-package ui;
+package app.cabinet.ui;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;

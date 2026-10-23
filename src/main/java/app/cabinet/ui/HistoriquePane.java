@@ -1,9 +1,11 @@
-package ui;
+package app.cabinet.ui;
 
-import modele.Patient;
-import modele.RendezVous;
-import service.Donnee;
+import app.cabinet.modele.Patient;
+import app.cabinet.modele.RendezVous;
+import app.cabinet.service.Donnee;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -42,9 +44,22 @@ public class HistoriquePane extends VBox {
         TableColumn<RendezVous, String> colEtat = new TableColumn<>("État");
         colEtat.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getEtat()));
 
+        // --- CORRECTION DE LA COLONNE PERIODE ---
         TableColumn<RendezVous, String> colPeriode = new TableColumn<>("Période");
-        colPeriode.setCellValueFactory(cd -> new SimpleStringProperty(
-                cd.getValue().getDateRdv().isBefore(LocalDate.now()) ? "Passé" : "À venir"));
+        colPeriode.setCellValueFactory(cd -> {
+            // On récupère la date du RDV (qui est un java.util.Date)
+            Date dateRdv = cd.getValue().getDateRdv();
+            
+            // On convertit la date d'aujourd'hui (LocalDate) en java.util.Date pour pouvoir comparer
+            Date aujourdhui = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            
+            // On compare : si la date du RDV est avant aujourd'hui, c'est le passé
+            if (dateRdv.before(aujourdhui)) {
+                return new SimpleStringProperty("Passé");
+            } else {
+                return new SimpleStringProperty("À venir");
+            }
+        });
 
         table.getColumns().add(colDate);
         table.getColumns().add(colHeure);
@@ -53,6 +68,7 @@ public class HistoriquePane extends VBox {
         table.getColumns().add(colTarif);
         table.getColumns().add(colEtat);
         table.getColumns().add(colPeriode);
+        
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         getChildren().add(table);
@@ -62,7 +78,8 @@ public class HistoriquePane extends VBox {
     // Recharge la liste (appelée quand on ouvre l'onglet)
     public void rafraichir() {
         List<RendezVous> liste = Donnee.rdvsDuPatient(patient);
-        liste.sort((a, b) -> b.getDateRdv().compareTo(a.getDateRdv())); // les plus récents d'abord
+        // Tri du plus récent au plus ancien
+        liste.sort((a, b) -> b.getDateRdv().compareTo(a.getDateRdv())); 
         table.setItems(FXCollections.observableArrayList(liste));
     }
 }

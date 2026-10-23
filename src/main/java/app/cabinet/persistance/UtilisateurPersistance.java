@@ -1,8 +1,8 @@
-package persistance;
+package app.cabinet.persistance;
 
-import modele.Administrateur;
-import modele.Patient;
-import modele.Utilisateur;
+import app.cabinet.modele.Administrateur;
+import app.cabinet.modele.Patient;
+import app.cabinet.modele.Utilisateur;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

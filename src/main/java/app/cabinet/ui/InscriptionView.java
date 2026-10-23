@@ -1,9 +1,9 @@
-package ui;
+package app.cabinet.ui;
 
-import modele.Patient;
-import service.Donnee;
-import util.MotDePasse;
-import util.Validation;
+import app.cabinet.modele.Patient;
+import app.cabinet.service.Donnee;
+import app.cabinet.util.MotDePasse;
+import app.cabinet.util.Validation;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

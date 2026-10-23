@@ -1,9 +1,9 @@
-package ui;
+package app.cabinet.ui;
 
-import modele.Administrateur;
-import modele.Patient;
-import modele.Utilisateur;
-import service.Donnee;
+import app.cabinet.modele.Administrateur;
+import app.cabinet.modele.Patient;
+import app.cabinet.modele.Utilisateur;
+import app.cabinet.service.Donnee;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

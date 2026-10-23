@@ -1,11 +1,12 @@
-package ui;
+package app.cabinet.ui;
 
-import modele.Acte;
-import modele.Creneau;
-import modele.Dentiste;
-import modele.Patient;
-import modele.RendezVous;
-import service.Donnee;
+import app.cabinet.modele.Acte;
+import app.cabinet.modele.Creneau;
+import app.cabinet.modele.CreneauReserve;
+import app.cabinet.modele.Dentiste;
+import app.cabinet.modele.Patient;
+import app.cabinet.modele.RendezVous;
+import app.cabinet.service.Donnee;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,7 +34,6 @@ import javafx.stage.Stage;
 
 public class PatientView {
 
-    // Code couleur du planning
     private static final String VERT = "-fx-background-color: #2ecc71; -fx-text-fill: white;";
     private static final String ROUGE = "-fx-background-color: #e74c3c; -fx-text-fill: white;";
     private static final String ORANGE = "-fx-background-color: #f39c12; -fx-text-fill: white;";
@@ -54,7 +54,6 @@ public class PatientView {
     }
 
     public void afficher() {
-        // Barre du haut
         Label titre = new Label("Espace patient : " + patient.getPrenom() + " " + patient.getNom());
         titre.getStyleClass().add("titre");
 
@@ -68,7 +67,6 @@ public class PatientView {
         barre.setPadding(new Insets(10));
         barre.setAlignment(Pos.CENTER_LEFT);
 
-        // Choix du dentiste et de l'acte
         comboDentiste.setItems(FXCollections.observableArrayList(Donnee.dentistes));
         comboDentiste.setPromptText("Choisir un dentiste");
         comboActe.setItems(FXCollections.observableArrayList(Donnee.actes));
@@ -102,7 +100,6 @@ public class PatientView {
         VBox reservation = new VBox(10, choix, legende, defilement, message, btnReserver);
         reservation.setPadding(new Insets(10));
 
-        // Onglets : réservation et historique (tâche 3.7)
         historique = new HistoriquePane(patient);
         Tab tabReservation = new Tab("Réserver un rendez-vous", reservation);
         Tab tabHistorique = new Tab("Mes rendez-vous", historique);
@@ -122,22 +119,15 @@ public class PatientView {
         stage.setScene(Style.creerScene(racine, 1000, 650));
     }
 
-    // ---------- Règles métier ----------
-
-    // Un créneau est libre si aucun rendez-vous non annulé ne l'occupe
     private boolean estLibre(Creneau c) {
         return Donnee.rdvDuCreneau(c) == null;
     }
 
-    // Vrai si la durée de l'acte tient dans le créneau
     private boolean acteTient(Creneau c, Acte acte) {
         long minutes = Duration.between(c.getHeureDebut(), c.getHeureFin()).toMinutes();
         return acte.getDuree() <= minutes;
     }
 
-    // ---------- Dessin du planning ----------
-
-    // Dessine la grille : jours en colonnes, heures en lignes
     private void dessinerPlanning() {
         grille.getChildren().clear();
         Dentiste dentiste = comboDentiste.getValue();
@@ -146,7 +136,6 @@ public class PatientView {
         }
         LocalDate debut = LocalDate.now();
 
-        // En-têtes des 7 jours
         for (int j = 0; j < 7; j++) {
             LocalDate jour = debut.plusDays(j);
             String nomJour = jour.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.FRENCH);
@@ -155,7 +144,6 @@ public class PatientView {
             grille.add(etiquette, j + 1, 0);
         }
 
-        // Liste des heures de début de ce dentiste, triées
         List<LocalTime> heures = new ArrayList<>();
         for (Creneau c : Donnee.creneaux) {
             if (c.getDentiste().getIdDentiste() == dentiste.getIdDentiste()
@@ -165,7 +153,6 @@ public class PatientView {
         }
         Collections.sort(heures);
 
-        // Une ligne par heure, un bouton par créneau existant
         for (int i = 0; i < heures.size(); i++) {
             grille.add(new Label(heures.get(i).toString()), 0, i + 1);
             for (int j = 0; j < 7; j++) {
@@ -178,7 +165,6 @@ public class PatientView {
     }
 
     private Creneau chercherCreneau(Dentiste dentiste, LocalDate jour, LocalTime heure) {
-        // On ne propose pas les heures déjà passées aujourd'hui
         if (jour.equals(LocalDate.now()) && heure.isBefore(LocalTime.now())) {
             return null;
         }
@@ -212,9 +198,6 @@ public class PatientView {
         return VERT;
     }
 
-    // ---------- Actions ----------
-
-    // Clic sur un créneau : vérifications puis passage en bleu
     private void choisir(Creneau c) {
         if (!estLibre(c)) {
             message.setText("Ce créneau est déjà occupé.");
@@ -234,14 +217,12 @@ public class PatientView {
         dessinerPlanning();
     }
 
-    // Confirmation : création du rendez-vous en attente
     private void reserver() {
         Acte acte = comboActe.getValue();
         if (creneauChoisi == null || acte == null) {
             Alerte.erreur("Choisissez un dentiste, un acte et un créneau libre.");
             return;
         }
-        // Revérification juste avant d'enregistrer (empêche la double réservation)
         if (!estLibre(creneauChoisi)) {
             Alerte.erreur("Ce créneau vient d'être pris. Choisissez-en un autre.");
             creneauChoisi = null;
@@ -254,8 +235,12 @@ public class PatientView {
         }
 
         Creneau c = creneauChoisi;
+        
+        // CORRECTION : Création du CreneauReserve et utilisation de EN_ATTENTE
+        CreneauReserve cr = new CreneauReserve(c);
         RendezVous rdv = new RendezVous(Donnee.prochainIdRdv(), LocalDate.now(), c.getDate(),
-                RendezVous.ATTENTE, patient, acte, c);
+                RendezVous.EN_ATTENTE, patient, acte, cr);
+                
         Donnee.rdvs.add(rdv);
         Donnee.sauvegarderRdvs();
 
@@ -270,6 +255,6 @@ public class PatientView {
 
         creneauChoisi = null;
         message.setText("");
-        dessinerPlanning(); // le créneau réservé passe au rouge
+        dessinerPlanning();
     }
 }

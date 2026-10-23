@@ -1,6 +1,6 @@
-package ui;
+package app.cabinet.ui;
 
-import modele.Administrateur;
+import app.cabinet.modele.Administrateur;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
